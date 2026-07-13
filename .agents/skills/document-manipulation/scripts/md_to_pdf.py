@@ -20,31 +20,62 @@ def main():
     with open(md_path, 'r', encoding='utf-8') as f:
         md_text = f.read()
 
+    import re
+    # Fix lists that don't have a blank line before them (strict markdown requirement)
+    lines = md_text.split('\n')
+    fixed_lines = []
+    list_pattern = re.compile(r'^\s*([\*\-\+]|\d+\.)\s')
+    for i, line in enumerate(lines):
+        if i > 0 and list_pattern.match(line):
+            prev_line = lines[i-1].strip()
+            if prev_line and not list_pattern.match(lines[i-1]):
+                fixed_lines.append('')
+        fixed_lines.append(line)
+    md_text = '\n'.join(fixed_lines)
+
     # Convert markdown to HTML
     try:
         import markdown
-        html_body = markdown.markdown(md_text, extensions=['tables', 'fenced_code'])
+        html_body = markdown.markdown(md_text, extensions=['extra', 'sane_lists', 'md_in_html'])
     except ImportError:
         print("Error: The 'markdown' Python package is not installed. Please run: pip install markdown")
         sys.exit(1)
 
+    md_dir_uri = 'file:///' + os.path.dirname(md_path).replace(os.sep, '/') + '/'
+    
     html_content = f"""
     <!DOCTYPE html>
     <html>
     <head>
         <meta charset="utf-8">
+        <base href="{md_dir_uri}">
         <title>Document</title>
         <style>
+            @page {{
+                margin: 1in 0.5in;
+            }}
             body {{
                 font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
                 color: #2c3e50;
                 line-height: 1.6;
-                padding: 40px;
+                padding: 0;
+                padding-bottom: 30px;
                 max-width: 800px;
                 margin: 0 auto;
             }}
-            h1, h2, h3 {{
+            ul, ol {{
+                margin: 15px 0;
+                padding-left: 30px;
+            }}
+            li {{
+                margin-bottom: 8px;
+            }}
+            h1, h2, h3, h4, h5, h6 {{
                 color: #2980b9;
+                page-break-after: avoid;
+            }}
+            h2 {{
+                page-break-before: always;
             }}
             code {{
                 background-color: #f8f9fa;
@@ -81,6 +112,9 @@ def main():
         </style>
     </head>
     <body>
+        <div style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 10pt; color: #7f8c8d; padding-bottom: 5px; background: white;">
+            {os.path.basename(md_path)} | Nikhil Mundhra
+        </div>
         {html_body}
     </body>
     </html>
@@ -104,6 +138,7 @@ def main():
             chrome_path,
             '--headless',
             '--disable-gpu',
+            '--no-pdf-header-footer',
             f'--print-to-pdf={pdf_path}',
             html_path
         ], capture_output=True, text=True, timeout=30)
