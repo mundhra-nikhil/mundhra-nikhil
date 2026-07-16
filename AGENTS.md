@@ -21,3 +21,10 @@ When assigned multiple features or bugs in a single request, you MUST decide bet
 * Match the existing architectural patterns, naming conventions, and paradigm of the codebase you are in.
 * Write robust error handling; do not swallow exceptions silently.
 * Remove any debugging statements (e.g., console.log, print) before finalizing the task.
+
+## Workspace Structure
+This workspace contains multiple nested Git repositories and submodules:
+- **Main Repository (Outer):** `WinnCo` (the root repository)
+- **Nested Repository 1:** `Winnco` (located at `Winnco/`)
+- **Nested Repository 2:** `ai_api_winnco` (located at `ai_api_winnco/`)
+- **Submodule:** `.agents` (located at `.agents/`)

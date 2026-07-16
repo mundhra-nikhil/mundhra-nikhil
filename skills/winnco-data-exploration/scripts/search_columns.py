@@ -1,7 +1,7 @@
 import duckdb
 from pathlib import Path
 
-base_dir = Path(r"c:/Users/Int202613/Documents/Github/WinnCo/WinnCo Dataset/Data Dump")
+base_dir = Path("/Users/prabath/Downloads/WinnCo/WinnCo Dataset/Data Dump")
 conn = duckdb.connect()
 
 target_keywords = ['email', 'phone', 'website', 'address', 'city', 'state', 'zip']

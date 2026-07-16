@@ -5,7 +5,7 @@ from pathlib import Path
 conn = duckdb.connect()
 
 # Paths
-base_dir = r"c:/Users/Int202613/Documents/Github/WinnCo/WinnCo Dataset/Data Dump"
+base_dir = "/Users/prabath/Downloads/WinnCo/WinnCo Dataset/Data Dump"
 dim_ta = f"{base_dir}/dim_tables/dim_transaction_activity.parquet"
 fact_ta = f"{base_dir}/fact_tables/fact_transaction_activity.parquet"
 
