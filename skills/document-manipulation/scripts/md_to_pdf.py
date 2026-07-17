@@ -125,9 +125,15 @@ def main():
     with os.fdopen(fd, 'w', encoding='utf-8') as f:
         f.write(html_content)
 
-    chrome_path = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
+    import sys
+    if sys.platform == 'darwin':
+        chrome_path = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    elif sys.platform == 'win32':
+        chrome_path = r'C:\Program Files\Google\Chrome\Application\chrome.exe'
+    else:
+        chrome_path = 'google-chrome'
     
-    if not os.path.exists(chrome_path):
+    if not os.path.exists(chrome_path) and sys.platform in ('darwin', 'win32'):
         print(f"Error: Chrome not found at {chrome_path}")
         os.remove(html_path)
         sys.exit(1)
